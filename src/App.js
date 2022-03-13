@@ -1,71 +1,24 @@
 import React from 'react';
-import axios from 'axios';
-import Movie from './Movie';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './routes/Home';
+import About from './routes/About';
+import Detail from './routes/Detail';
+import Navigation from './components/Navigation';
 
-/* Comment
-
-*/
-
-//#region 1. function component
-// function App() {
-//   return (<div>
-//       <h1>Hello</h1>
-//     </div>);
-// }
-//#endregion
-
-//#region 2. className component
-class App extends React.Component {
-  // state를 사용할때 Default값을 필수적으로 지정할 필요는 없다.
-  state = {
-    isLoading: true,
-    movies:[]
-  };
-
-  getMovies = async () => {
-    // movies.data.data.movies
-    const {
-      data: {
-        data:{
-          movies
-        }
-      }
-    } = await axios.get("https://yts.mx/api/v2/list_movies.json?sort_by=rating");
-    this.setState({ movies, isLoading:false });
-  };
-
-  async componentDidMount(){
-    this.getMovies();
-  };
-
-  render() { 
-    const {isLoading, movies} = this.state;
-    return (
-      <section className='constainer'>
-        {isLoading ? (
-          <div className="loader">
-            <span className="loader__text">Loading...</span>
-          </div>
-        ) : (
-          <div className="movies">
-            {movies.map(movie => (
-              <Movie 
-              key={movie.id}
-              year={movie.year}
-              title={movie.title}
-              summary={movie.summary}
-              poster={movie.medium_cover_image}
-              genres={movie.genres}
-            />
-            ))}
-          </div>
-        )
-        }
-      </section>
-    );
-  }
+/*
+  Link 기능을 사용하려면 BrowserRouter 안에 선언되어야한다.
+ */
+function App(){
+  return (
+    <Router basename={process.env.PUBLIC_URL}>
+      <Navigation/>
+      <Routes>
+        <Route path="/" exact={true} element={<Home/>} />
+        <Route path="/about" element={<About/>} />
+        <Route path="/movie-detail" element={<Detail/>} />
+      </Routes>
+    </Router>
+  );
 }
-//#endregion
 
 export default App;
